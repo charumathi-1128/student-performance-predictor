@@ -1,11 +1,15 @@
+import os
+import joblib
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, r2_score
 import matplotlib.pyplot as plt
 
-data = pd.read_csv("student_scores.csv")
 
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+data = pd.read_csv(os.path.join(BASE_DIR, "student_scores.csv"))
 X = data[['Hours']]
 y = data['Score']
 
@@ -15,7 +19,8 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 model = LinearRegression()
 model.fit(X_train, y_train)
-
+joblib.dump(model, os.path.join(BASE_DIR, "student_model.pkl"))
+print("Model saved successfully!")
 predictions = model.predict(X_test)
 
 print("Slope:", model.coef_[0])
@@ -34,5 +39,6 @@ plt.plot(X, model.predict(X))
 plt.xlabel("Hours Studied")
 plt.ylabel("Score")
 plt.title("Linear Regression")
-plt.savefig("linear_regression_graph.png")
+plt.savefig(os.path.join(BASE_DIR, "linear_regression_graph.png"))
+
 plt.show()
